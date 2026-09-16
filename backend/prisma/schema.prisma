@@ -1,0 +1,102 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  ORGANIZER
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  EXPIRED
+  CANCELLED
+}
+
+model User {
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  password      String
+  role          Role     @default(CUSTOMER)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  events        Event[]
+  orders        Order[]
+
+  @@map("users")
+}
+
+model Event {
+  id            String       @id @default(uuid())
+  organizer_id  String
+  title         String
+  description   String       @db.Text
+  location      String
+  banner_url    String?
+  event_date    DateTime
+  created_at    DateTime     @default(now())
+  updated_at    DateTime     @updatedAt
+
+  organizer     User         @relation(fields: [organizer_id], references: [id], onDelete: Cascade)
+  ticket_tiers  TicketTier[]
+
+  @@map("events")
+}
+
+model TicketTier {
+  id              String      @id @default(uuid())
+  event_id        String
+  name            String
+  price           Decimal     @db.Decimal(12, 2)
+  total_quota     Int
+  available_stock Int
+  created_at      DateTime    @default(now())
+  updated_at      DateTime    @updatedAt
+
+  event           Event       @relation(fields: [event_id], references: [id], onDelete: Cascade)
+  order_items     OrderItem[]
+
+  @@map("ticket_tiers")
+}
+
+model Order {
+  id                String      @id @default(uuid())
+  customer_id       String
+  total_amount      Decimal     @db.Decimal(12, 2)
+  status            OrderStatus @default(PENDING)
+  snap_token        String?
+  snap_redirect_url String?
+  created_at        DateTime    @default(now())
+  updated_at        DateTime    @updatedAt
+
+  customer          User        @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+  order_items       OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id              String     @id @default(uuid())
+  order_id        String
+  ticket_tier_id  String
+  quantity        Int
+  subtotal        Decimal    @db.Decimal(12, 2)
+
+  order           Order      @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  ticket_tier     TicketTier @relation(fields: [ticket_tier_id], references: [id], onDelete: Restrict)
+
+  @@map("order_items")
+}
