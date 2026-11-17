@@ -28,8 +28,8 @@
 
 ## 4. Roadmap Modul
 - [x] **Modul 1: Setup Backend & Skema Prisma MySQL**
-- [ ] **Modul 2: Auth Service (Register, Login, Role-Based Middleware)**
-- [ ] **Modul 3: Event & Multi-Tier Ticket CRUD (Organizer)**
-- [ ] **Modul 4: Booking Engine with Pessimistic Locking + Midtrans Snap**
-- [ ] **Modul 5: Midtrans Webhook Handler & Ticket Rollback Mechanism**
+- [x] **Modul 2: Auth Service (Register, Login, Role-Based Middleware)**
+- [x] **Modul 3: Event & Multi-Tier Ticket CRUD (Organizer)**
+- [x] **Modul 4: Booking Engine with Pessimistic Locking + Midtrans Snap**
+- [x] **Modul 5: Midtrans Webhook Handler & Ticket Rollback Mechanism**
 - [ ] **Modul 6: Setup Frontend Next.js + Event Catalog & Booking Flow**
